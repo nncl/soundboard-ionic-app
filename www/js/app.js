@@ -13,7 +13,7 @@ app.run(function ($ionicPlatform) {
 	});
 });
 
-app.controller('SoundBoardCtrl', function ($scope) {
+app.controller('SoundBoardCtrl', function ($scope, $window) {
 
 	$scope.media = null;
 
@@ -68,15 +68,42 @@ app.controller('SoundBoardCtrl', function ($scope) {
 
 	$scope.play = function (sound) {
 
-		// Check the status of media because we do not want to a sound above another
+		// Check the status of media because we do not want to plays a sound
+		// above another one.
 		if ( $scope.media ) {
 			$scope.media.pause();
 		};
 
-		$scope.media = new Audio();
-		$scope.media.src = sound.file;
-		$scope.media.load();
-		$scope.media.play();
+		// Steps
+		// 1. Check if it's a device or browser running the app
+		// 2. Check if the platform is totally ready
+		// 3. Plays the sound ***
+
+		if ( $window.cordova ) {
+			console.log('Play called on a device!');
+
+			// Let's get sure we are not calling any function before the actual app
+			// is total loaded
+			ionic.Platform.ready(function(){
+
+				// ***
+				var src = sound.file;
+				// On android we need to append the www folder
+				if ( ionic.Platform.is('android') ) {
+					src = '/android_asset/www/' + src;
+				};
+
+				$scope.media = $window.Media(src);
+				$scope.media.play();
+
+			});
+
+		} else {
+			$scope.media = new Audio();
+			$scope.media.src = sound.file;
+			$scope.media.load();
+			$scope.media.play();
+		}
 	};
 });
 
