@@ -67,6 +67,16 @@ app.controller('SoundBoardCtrl', function ($scope) {
 	};
 
 	$scope.play = function (sound) {
+
+		// Check the status of media because we do not want to a sound above another
+		if ( $scope.media ) {
+			$scope.media.pause();
+		};
+
+		$scope.media = new Audio();
+		$scope.media.src = sound.file;
+		$scope.media.load();
+		$scope.media.play();
 	};
 });
 
