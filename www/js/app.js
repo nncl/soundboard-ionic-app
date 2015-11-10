@@ -66,6 +66,23 @@ app.controller('SoundBoardCtrl', function ($scope, $window) {
 		]
 	};
 
+	/**
+	* Function that remove the sound from list
+	* TODO: implement it to backend
+	*/
+
+	$scope.deleteSound = function( $index ) {
+		$scope.model.sounds.splice($index, 1);
+	}
+
+	$scope.moveSound = function(sound, fromIndex, toIndex) {
+		// Remove from its previous position
+		$scope.model.sounds.splice(fromIndex, 1);
+
+		// Insert the sound into the target position
+		$scope.model.sounds.splice(toIndex, 0, sound);
+	}
+
 	$scope.play = function (sound) {
 
 		// Check the status of media because we do not want to plays a sound
